@@ -24,9 +24,6 @@ module.exports.register = async (req, res, next) => {
   };
 
   
-
-  
-
 module.exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
@@ -38,6 +35,20 @@ module.exports.login = async (req, res, next) => {
       return res.json({ msg: "Incorrect Username or Password", status: false });
     delete user.password;
     return res.json({ status: true, user });
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.params.id } }).select([
+      "email",
+      "username",
+      "avatarImage",
+      "_id",
+    ]);
+    return res.json(users);
   } catch (ex) {
     next(ex);
   }

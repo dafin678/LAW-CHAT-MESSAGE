@@ -29,6 +29,15 @@ export default function SetAvatar() {
         theme: "dark",
     };
 
+    useEffect(() => {
+        const asyncFn = async () =>{
+            if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY))
+          navigate("/login");
+        };
+        asyncFn();
+      }, []);
+    
+
 
 
     const setProfilePicture = async () => {
@@ -89,9 +98,8 @@ export default function SetAvatar() {
         };
         asyncFn();
       }, []);
-      
 
-    
+
 
       return (
         <>
