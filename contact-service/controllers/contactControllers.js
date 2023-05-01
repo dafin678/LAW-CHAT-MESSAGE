@@ -4,6 +4,8 @@ module.exports.addContact = async (req, res, next) => {
     try {
         const username = req.params.username;
         const contactUsername = req.body.contact_username;
+        const contactEmail = req.body.contact_email;
+        const contactAvatar = req.body.contact_avatar;
         const contactCheck = await Contact.findOne({
             user_username: username,
             contact_username: contactUsername
@@ -13,7 +15,9 @@ module.exports.addContact = async (req, res, next) => {
         }
         const contact = await Contact.create({
             user_username: username,
-            contact_username: contactUsername
+            contact_username: contactUsername,
+            contact_email: contactEmail,
+            contact_avatar: contactAvatar
         })
         return res.json({ status: true, contact });
     } catch (error) {
@@ -41,15 +45,13 @@ module.exports.deleteContact = async (req, res, next) => {
 module.exports.getContactList = async (req, res, next) => {
     try {
         const username = req.params.username;
-        const userCheck = await Contact.findOne({
-            user_username: username,
-        })
-        if (!userCheck) {
-            return res.json({ msg: "User not found", status: false });
-        }
         const contactList = await Contact.find({
             user_username: username
-        })
+        }).select([
+            "contact_username",
+            "contact_email",
+            "contact_avatar"
+        ]);
         return res.json({ status: true, contactList });
     } catch (error) {
         next(error)
