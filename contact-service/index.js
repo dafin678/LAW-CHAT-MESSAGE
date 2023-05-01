@@ -2,14 +2,16 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const contactRoutes = require("./routes/contactRoutes")
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json')
 
 const app = express();
 require("dotenv").config();
 
 app.use(cors());
 app.use(express.json());
-app.use("/api/contact", contactRoutes)
+app.use("", contactRoutes)
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

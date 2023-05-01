@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
 
 const contactSchema = new mongoose.Schema({
-    user_username: String,
-    contact_username: String,
-    contact_email: String,
-    contact_avatar: String
+    user: { type: String, required: true },
+    contact: { type: String, required: true }
 });
 
 module.exports = mongoose.model("Contacts", contactSchema);
