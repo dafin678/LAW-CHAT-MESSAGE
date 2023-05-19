@@ -1,0 +1,173 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Contact Management API",
+    "description": "Manage User Contacts"
+  },
+  "host": "localhost:5001",
+  "basePath": "",
+  "tags": [
+    {
+      "name": "Contact",
+      "description": ""
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/contact/{user}": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "description": "Endpoint for adding contact to user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Field that represents user (id, username, etc)"
+          },
+          {
+            "name": "contact",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contact": {
+                  "example": "any"
+                }
+              }
+            },
+            "description": "Field that represents contact (id, username, etc)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact created",
+            "schema": {
+              "$ref": "#/definitions/Contact"
+            }
+          },
+          "409": {
+            "description": "Contact already exists",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contact"
+        ],
+        "description": "Endpoint for deleting contact of user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Field that represents user (id, username, etc)"
+          },
+          {
+            "name": "contact",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "contact": {
+                  "example": "any"
+                }
+              }
+            },
+            "description": "Field that represents contact (id, username, etc)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted",
+            "schema": {
+              "$ref": "#/definitions/Contact"
+            }
+          },
+          "404": {
+            "description": "Contact doesnt exist",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Contact"
+        ],
+        "description": "Endpoint for getting contact list of user",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Field that represents user (id, username, etc)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted",
+            "schema": {
+              "$ref": "#/definitions/ContactList"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Contact": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "contact": {
+          "type": "string",
+          "example": "Simon Doe"
+        }
+      }
+    },
+    "ContactList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "contact": {
+            "type": "string",
+            "example": "Simon Doe"
+          }
+        }
+      }
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Message"
+        }
+      }
+    }
+  }
+}
