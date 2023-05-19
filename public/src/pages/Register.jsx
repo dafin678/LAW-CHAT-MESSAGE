@@ -23,10 +23,11 @@ export default function Register() {
     confirmPassword: "",
   });
 
+
   useEffect(() => {
-    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      navigate("/");
-    }
+        if (axios.defaults.headers.common['Authorization']){
+          navigate("/");
+        }
   }, []);
 
   const handleChange = (event) => {
@@ -69,18 +70,17 @@ export default function Register() {
         username,
         email,
         password,
-      });
-
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
-      }
-      if (data.status === true) {
-        localStorage.setItem(
-          process.env.REACT_APP_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
-        navigate("/");
-      }
+      }).then((response) => {
+        if (response.status === 200){
+          axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+          navigate("/");
+        }
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          toast.error(error.response.data, toastOptions);
+        }});
+        console.log(data);
     }
   };
 

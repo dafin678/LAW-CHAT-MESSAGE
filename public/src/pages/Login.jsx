@@ -9,7 +9,7 @@ import { loginRoute } from "../utils/APIRoutes";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [values, setValues] = useState({ username: "", password: "" });
+  const [values, setValues] = useState({ email: "", password: "" });
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -28,8 +28,8 @@ export default function Login() {
   };
 
   const validateForm = () => {
-    const { username, password } = values;
-    if (username === "") {
+    const { email, password } = values;
+    if (email === "") {
       toast.error("Email and Password is required.", toastOptions);
       return false;
     } else if (password === "") {
@@ -42,22 +42,20 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-      const { username, password } = values;
+      const { email, password } = values;
       const { data } = await axios.post(loginRoute, {
-        username,
+        email,
         password,
-      });
-      if (data.status === false) {
-        toast.error(data.msg, toastOptions);
-      }
-      if (data.status === true) {
-        localStorage.setItem(
-          process.env.REACT_APP_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
-
-        navigate("/");
-      }
+      }).catch(function (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          toast.error(error.response.data, toastOptions);
+        }});
+      // localStorage.setItem(process.env.REACT_APP_LOCALHOST_KEY,JSON.stringify(data));
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
+      console.log(data.access_token);
+      // axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
+      navigate("/");
     }
   };
 
@@ -71,8 +69,8 @@ export default function Login() {
           </div>
           <input
             type="text"
-            placeholder="Username"
-            name="username"
+            placeholder="Email"
+            name="email"
             onChange={(e) => handleChange(e)}
             min="3"
           />

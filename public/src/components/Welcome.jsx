@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Robot from "../assets/robot.gif";
-
+import axios from "axios";
+import { registerRoute } from "../utils/APIRoutes";
+import Logout from "./Logout";
 
 export default function Welcome() {
     const [userName, setUserName] = useState("");
 
-    useEffect(() => {
+      useEffect(() => {
         const asyncFn = async () =>{
-            setUserName(
-                await JSON.parse(
-                  localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-                ).username
-              );
+          const data = await axios.get(`${registerRoute}`);
+          console.log(data.data.username)
+          setUserName(
+            data.data.username
+          )
+          console(userName);
         };
         asyncFn();
       }, []);
@@ -25,6 +28,7 @@ export default function Welcome() {
           Welcome, <span>{userName}!</span>
         </h1>
         <h3>Please select a chat to Start messaging.</h3>
+        <Logout />
       </Container>
     );
   }

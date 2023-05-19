@@ -8,7 +8,7 @@ import { sendMessageRoute } from '../utils/APIRoutes';
 
 export default function ChatContainer({ currentChat }) {
     const handleSendMessage = async (msg)=>{
-      
+
     };
     return (
         <>
@@ -23,7 +23,7 @@ export default function ChatContainer({ currentChat }) {
                         <h3>{currentChat.username}</h3>
                     </div>
                 </div>
-                <Logout />
+                
             </div>
             <Messages/>
             <ChatInput handleSendMessage={handleSendMessage}/>

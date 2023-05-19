@@ -6,6 +6,7 @@ import { allUsersRoute} from "../utils/APIRoutes";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import ChatContainer from "../components/ChatContainer";
+import { registerRoute } from "../utils/APIRoutes";
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -19,10 +20,11 @@ export default function Chat() {
   
   useEffect(() => {
     const asyncFn = async () =>{
-        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)){
+        if (!axios.defaults.headers.common['Authorization']){
           navigate("/login");
         } else{
-          setCurrentUser(await JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
+          const data = await axios.get(`${registerRoute}`);
+          setCurrentUser(data.data);
           setIsLoaded(true);
         }
     };
@@ -32,7 +34,7 @@ export default function Chat() {
   useEffect(() => {
     const asyncFn = async () =>{
         if (currentUser){
-          if(currentUser.isAvatarImageSet){
+          if(currentUser.is_ava_set){
             const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
             setContacts(data.data)
           }
@@ -43,6 +45,9 @@ export default function Chat() {
     };
     asyncFn();
   }, [currentUser]);
+
+
+
   return ( <Container>
               <div className="container">
                 <Contacts contacts={contacts} currentUser={currentUser} changeChat={handleChatChange}/>
