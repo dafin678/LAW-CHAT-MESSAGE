@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { allUsersRoute} from "../utils/APIRoutes";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import ChatContainer from "../components/ChatContainer";
-import { registerRoute } from "../utils/APIRoutes";
+import { registerRoute, contactsRoute } from "../utils/APIRoutes";
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -29,14 +28,14 @@ export default function Chat() {
         }
     };
     asyncFn();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const asyncFn = async () =>{
         if (currentUser){
           if(currentUser.is_ava_set){
-            const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-            setContacts(data.data)
+            const response = await axios.get(`${contactsRoute}/${currentUser.username}`);
+            setContacts(response.data);
           }
           else{
             navigate("/setAvatar");
@@ -44,16 +43,15 @@ export default function Chat() {
         } 
     };
     asyncFn();
-  }, [currentUser]);
+  }, [navigate, currentUser]);
 
 
 
   return ( <Container>
               <div className="container">
                 <Contacts contacts={contacts} currentUser={currentUser} changeChat={handleChatChange}/>
-                { isLoaded && currentChat === undefined ? (
+                { !isLoaded && currentChat === undefined ? (
                   <Welcome currentUser={currentUser}/>) : (
-                  
                   <ChatContainer currentChat={currentChat}/>
                 )
                 }

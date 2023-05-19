@@ -28,7 +28,7 @@ export default function Register() {
         if (axios.defaults.headers.common['Authorization']){
           navigate("/");
         }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });

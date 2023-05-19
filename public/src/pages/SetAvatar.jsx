@@ -37,7 +37,7 @@ export default function SetAvatar() {
           }
       };
       asyncFn();
-    }, []);
+    }, [navigate]);
 
 
 
@@ -110,7 +110,7 @@ export default function SetAvatar() {
           setIsLoading(false);
         };
         asyncFn();
-      }, []);
+      }, [api]);
 
 
 

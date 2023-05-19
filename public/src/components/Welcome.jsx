@@ -15,7 +15,6 @@ export default function Welcome() {
           setUserName(
             data.data.username
           )
-          console(userName);
         };
         asyncFn();
       }, []);

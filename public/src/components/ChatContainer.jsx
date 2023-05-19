@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import Logout from './Logout';
-import ChatInput from './ChatInput';
-import Messages from './Messages';
-import axios from 'axios';
-import { sendMessageRoute } from '../utils/APIRoutes';
+import ChatInput from "./ChatInput";
+import Messages from "./Messages"
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 
 export default function ChatContainer({ currentChat }) {
     const handleSendMessage = async (msg)=>{
@@ -17,13 +17,12 @@ export default function ChatContainer({ currentChat }) {
             <div className="chat-header">
                 <div className="user-details">
                     <div className="avatar">
-                        <img src={`data:image/svg+xml;base64,${currentChat.avatarImage}`} alt="avatar" />
+                        <img src={`data:image/svg+xml;base64,${currentChat.avatar}`} alt="avatar" />
                     </div>
                     <div className="username">
                         <h3>{currentChat.username}</h3>
                     </div>
                 </div>
-                
             </div>
             <Messages/>
             <ChatInput handleSendMessage={handleSendMessage}/>

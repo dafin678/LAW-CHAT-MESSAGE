@@ -1,11 +1,32 @@
 import React, { useState, useEffect } from "react";
+import { RiContactsBook2Fill } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
+import { userHost } from "../utils/APIRoutes";
 import styled from "styled-components";
 import Logo from "../assets/logo.svg";
+import Logout from "./Logout";
+import axios from "axios";
 
 export default function Contacts({contacts,currentUser, changeChat}) {
     const [currentUserName, setCurrentUserName] = useState(undefined);
     const [currentUserImage, setCurrentUserImage] = useState(undefined);
     const [currentSelected, setCurrentSelected] = useState(undefined);
+    const [userContacts, setUserContacts] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      const fetchUsers = Promise.all(contacts.map(async (contact, index)=>{
+        try {
+          const response = await axios.get(`${userHost}/users/name/${contact.contact}`);
+          return response.data;
+        } catch (error) {
+          return;
+        }
+      }));
+
+      fetchUsers.then(data => setUserContacts(data))
+    }, [contacts]);
+
     const changeCurrentChat = (index, contact) => {
       setCurrentSelected(index);
       changeChat(contact);
@@ -13,10 +34,16 @@ export default function Contacts({contacts,currentUser, changeChat}) {
 
     useEffect(() =>{
         if (currentUser){
-            setCurrentUserImage(currentUser.avatarImage);
+            setCurrentUserImage(currentUser.avatar);
             setCurrentUserName(currentUser.username);
+            console.log(currentUserImage)
+            console.log(currentUserName)
         }
     }, [currentUser]);
+
+    const handleClick = async () => {
+      navigate("/addcontact")
+    };
 
   return <>
   {
@@ -28,13 +55,13 @@ export default function Contacts({contacts,currentUser, changeChat}) {
         </div>
         <div className="contacts">
           {
-            contacts.map((contact,index)=> {
+            userContacts.map((contact,index)=> {
               return (
                 <div className={`contact ${index === currentSelected ? 
                 "selected": ""}`} key={index} onClick={()=>changeCurrentChat(index,contact)}>
                   <div className="avatar">
                     <img
-                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                      src={`data:image/svg+xml;base64,${contact.avatar}`}
                       alt="avatar"
                     />
                   </div>
@@ -46,20 +73,44 @@ export default function Contacts({contacts,currentUser, changeChat}) {
             })
           }
         </div>
-        <div className="current-user">
-        <div className="avatar">
-            <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avatar" />
-        </div>
-        <div className="username">
-          <h3>{currentUserName}</h3>
-        </div>
-        </div>
+        <div className="contacts-footer">
+            <div className="current-user">
+              <div className="avatar">
+                <img
+                  src={`data:image/svg+xml;base64,${currentUserImage}`}
+                  alt="avatar"
+                />
+              </div>
+              <div className="username">
+                <h2>{currentUserName}</h2>
+              </div>
+            </div>
+            <div style={{display: "flex"}}>
+              <Button onClick={handleClick}>
+                <RiContactsBook2Fill />
+              </Button>
+              <Logout />
+            </div>           
+          </div>
       </Container>
     )
   }
   </>;
 }
-
+const Button = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background-color: #0d0d30;
+  border: none;
+  cursor: pointer;
+  svg {
+    font-size: 1.3rem;
+    color: #ebe7ff;
+  }
+`;
 const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
@@ -118,6 +169,15 @@ const Container = styled.div`
       background-color: #9a86f3;
     }
   }
+
+  .contacts-footer {
+    background-color: #0d0d30;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+  }
+
   .current-user {
     background-color: #0d0d30;
     display: flex;
