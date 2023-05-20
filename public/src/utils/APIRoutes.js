@@ -1,9 +1,9 @@
 
-export const host = "https://localhost:8888";
+export const host = "http://localhost:8888";
 export const logoutRoute = `${host}/api/auth/logout`;
 export const allUsersRoute = `${host}/api/auth/allusers`;
-export const sendMessageRoute = `${host}/api/messages/addmsg`;
-export const recieveMessageRoute = `${host}/api/messages/getmsg`;
+export const sendMessageRoute = `${host}/api/message/addmsg`;
+export const recieveMessageRoute = `${host}/api/message/getmsg`;
 
 export const host2 = "http://34.28.228.30";
 // export const host2 = "http://localhost:5001";
