@@ -6,9 +6,13 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 
-export default function ChatContainer({ currentChat }) {
+export default function ChatContainer({ currentChat,currentUser }) {
     const handleSendMessage = async (msg)=>{
-
+        await axios.post(sendMessageRoute,{
+          from: currentUser._id,
+          to: currentChat._id,
+          message: msg,
+        })
     };
     return (
         <>
