@@ -11,7 +11,6 @@ export default function Welcome() {
       useEffect(() => {
         const asyncFn = async () =>{
           const data = await axios.get(`${registerRoute}`);
-          console.log(data.data.username)
           setUserName(
             data.data.username
           )

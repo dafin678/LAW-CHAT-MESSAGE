@@ -12,7 +12,7 @@ module.exports.getMessages = async (req, res, next) => {
 
     const projectedMessages = messages.map((msg) => {
       return {
-        fromSelf: msg.sender.toString() === from,
+        fromSelf: msg.sender === from,
         message: msg.message.text,
       };
     });

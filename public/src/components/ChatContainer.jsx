@@ -7,7 +7,19 @@ import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 
 export default function ChatContainer({ currentChat,currentUser }) {
-  
+    const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+      const asyncFn = async () => {
+        const response = await axios.post(recieveMessageRoute, {
+          from: currentUser.userid,
+          to: currentChat.userid,
+        });
+        setMessages(response.data);
+      };
+      asyncFn();
+    }, [currentChat]);
+
     const handleSendMessage = async (msg)=>{
         await axios.post(sendMessageRoute,{
           from: currentUser.userid,
@@ -29,7 +41,23 @@ export default function ChatContainer({ currentChat,currentUser }) {
                     </div>
                 </div>
             </div>
-            <Messages/>
+            <div className="chat-messages">
+              {messages?.map((message)=>{
+                  return (
+                    <div>
+                      <div
+                        className={`message ${
+                          message.fromSelf ? "sended":"received"
+                        }`} >
+                          <div className="content">
+                            <p>{message.message}</p>
+                          </div>
+                      </div>
+                    </div>
+                  );
+                })
+              }
+            </div>
             <ChatInput handleSendMessage={handleSendMessage}/>
         </Container>)}
         </>
@@ -59,46 +87,26 @@ const Container = styled.div`
       }
     }
   }
-  .chat-messages {
+  .chat-messages{
     padding: 1rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
     overflow: auto;
-    &::-webkit-scrollbar {
-      width: 0.2rem;
-      &-thumb {
-        background-color: #ffffff39;
-        width: 0.1rem;
-        border-radius: 1rem;
-      }
-    }
-    .message {
+    .message{
       display: flex;
       align-items: center;
-      .content {
-        max-width: 40%;
-        overflow-wrap: break-word;
-        padding: 1rem;
-        font-size: 1.1rem;
-        border-radius: 1rem;
-        color: #d1d1d1;
-        @media screen and (min-width: 720px) and (max-width: 1080px) {
-          max-width: 70%;
-        }
+      .content{
+      max-width: 40%;
+      overflow-wrap: break-word;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border-radius: 1rem;
+      color: #d1d1d1;
       }
     }
-    .sended {
+    .sended{
       justify-content: flex-end;
-      .content {
-        background-color: #4f04ff21;
-      }
-    }
-    .recieved {
-      justify-content: flex-start;
-      .content {
-        background-color: #9900ff20;
-      }
     }
   }
 `;
