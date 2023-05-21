@@ -18,7 +18,7 @@ export default function Login() {
     theme: "dark",
   };
   useEffect(() => {
-    if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+    if (localStorage.getItem("authToken")) {
       navigate("/");
     }
   }, [navigate]);
@@ -51,10 +51,9 @@ export default function Login() {
           console.log(error.response.data);
           toast.error(error.response.data, toastOptions);
         }});
-      // localStorage.setItem(process.env.REACT_APP_LOCALHOST_KEY,JSON.stringify(data));
+      localStorage.setItem("authToken",`Bearer ${data.access_token}`);
       axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
       console.log(data.access_token);
-      // axios.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`;
       navigate("/");
     }
   };

@@ -32,23 +32,18 @@ export default function SetAvatar() {
     // biar harus login dulu
     useEffect(() => {
       const asyncFn = async () =>{
-          if (!axios.defaults.headers.common['Authorization']){
+          if (!localStorage.getItem("authToken")){
             navigate("/login");
           }
       };
       asyncFn();
     }, [navigate]);
-
-
-
+    
     const setProfilePicture = async () => {
         if (selectedAvatar === undefined) {
           toast.error("Please select an avatar", toastOptions);
         } else {
-          // const user = await JSON.parse(
-          //   localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-          // );
-    
+         
           const { data } = await axios.put(`${setAvatarRoute}`, {
             pfp: avatars[selectedAvatar],
           }).catch(function (error) {
@@ -60,18 +55,6 @@ export default function SetAvatar() {
 
           console.log(data);
           navigate("/");
-
-          // if (data.isSet) {
-          //   user.isAvatarImageSet = true;
-          //   user.avatarImage = data.image;
-          //   localStorage.setItem(
-          //     process.env.REACT_APP_LOCALHOST_KEY,
-          //     JSON.stringify(user)
-          //   );
-          //   navigate("/");
-          // } else {
-          //   toast.error("Error setting avatar. Please try again.", toastOptions);
-          // }
         }
       };
     

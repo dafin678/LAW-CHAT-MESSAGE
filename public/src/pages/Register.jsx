@@ -25,7 +25,7 @@ export default function Register() {
 
 
   useEffect(() => {
-        if (axios.defaults.headers.common['Authorization']){
+        if (localStorage.getItem("authToken")){
           navigate("/");
         }
   }, [navigate]);
@@ -72,6 +72,7 @@ export default function Register() {
         password,
       }).then((response) => {
         if (response.status === 200){
+          localStorage.setItem("authToken",`Bearer ${response.data.access_token}`);
           axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
           navigate("/");
         }

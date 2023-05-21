@@ -10,7 +10,11 @@ export default function Welcome() {
 
       useEffect(() => {
         const asyncFn = async () =>{
-          const data = await axios.get(`${registerRoute}`);
+          const data = await axios.get(`${registerRoute}`,{
+            headers:{
+              'Authorization': localStorage.getItem("authToken")
+            }
+          });
           setUserName(
             data.data.username
           )
@@ -26,7 +30,6 @@ export default function Welcome() {
           Welcome, <span>{userName}!</span>
         </h1>
         <h3>Please select a chat to Start messaging.</h3>
-        <Logout />
       </Container>
     );
   }

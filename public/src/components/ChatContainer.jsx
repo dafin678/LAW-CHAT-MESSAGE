@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import ChatInput from "./ChatInput";
-import Messages from "./Messages"
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 
-export default function ChatContainer({ currentChat,currentUser }) {
+export default function ChatContainer({ currentChat,currentUser, socket}) {
     const [messages, setMessages] = useState([]);
+    const [arrivalMessage,setArrivalMessage] = useState(null);
+    const scrollRef = useRef();
 
     useEffect(() => {
+      if (currentChat){
       const asyncFn = async () => {
         const response = await axios.post(recieveMessageRoute, {
           from: currentUser.userid,
@@ -18,6 +20,7 @@ export default function ChatContainer({ currentChat,currentUser }) {
         setMessages(response.data);
       };
       asyncFn();
+    }
     }, [currentChat]);
 
     const handleSendMessage = async (msg)=>{
@@ -25,8 +28,35 @@ export default function ChatContainer({ currentChat,currentUser }) {
           from: currentUser.userid,
           to: currentChat.userid,
           message: msg,
-        })
+        });
+        socket.current.emit("send-msg",{
+          from: currentUser.userid,
+          to: currentChat.userid,
+          message: msg,
+        });
+        const msgs = [...messages];
+        msgs.push({fromSelf:true,message:msg});
+        setMessages(msgs);
     };
+
+
+    useEffect(() =>{
+      if (socket.current){
+        socket.current.on("msg-receive",(msg)=>{
+          setArrivalMessage({fromSelf:false,message: msg });
+        })
+      }
+    }, []);
+
+    useEffect(() =>{
+      arrivalMessage && setMessages((prev)=>[...prev, arrivalMessage]);
+    }, [arrivalMessage]);
+
+    useEffect(() =>{
+      scrollRef.current?.scrollIntoView({behaviour:"smooth"});
+    },[messages]);
+
+
     return (
         <>
         {currentChat &&(
@@ -44,7 +74,7 @@ export default function ChatContainer({ currentChat,currentUser }) {
             <div className="chat-messages">
               {messages?.map((message)=>{
                   return (
-                    <div>
+                    <div ref={scrollRef} key={uuidv4()}>
                       <div
                         className={`message ${
                           message.fromSelf ? "sended":"received"

@@ -17,7 +17,11 @@ export default function Contacts({contacts,currentUser, changeChat}) {
     useEffect(() => {
       const fetchUsers = Promise.all(contacts.map(async (contact, index)=>{
         try {
-          const response = await axios.get(`${userHost}/users/name/${contact.contact}`);
+          const response = await axios.get(`${userHost}/users/name/${contact.contact}`,{
+            headers:{
+              'Authorization': localStorage.getItem("authToken")
+            }
+          });
           return response.data;
         } catch (error) {
           return;
@@ -36,8 +40,6 @@ export default function Contacts({contacts,currentUser, changeChat}) {
         if (currentUser){
             setCurrentUserImage(currentUser.avatar);
             setCurrentUserName(currentUser.username);
-            console.log(currentUserImage)
-            console.log(currentUserName)
         }
     }, [currentUser]);
 

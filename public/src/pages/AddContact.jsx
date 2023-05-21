@@ -20,7 +20,7 @@ export default function AddContact() {
   };
   useEffect(() => {
     const asyncFn = async () =>{
-        if (!axios.defaults.headers.common['Authorization']){
+        if (!localStorage.getItem("authToken")){
           navigate("/login");
         } else{
           const data = await axios.get(`${registerRoute}`);

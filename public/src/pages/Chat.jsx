@@ -1,35 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
 import ChatContainer from "../components/ChatContainer";
-import { registerRoute, contactsRoute } from "../utils/APIRoutes";
+import { registerRoute, contactsRoute, host } from "../utils/APIRoutes";
+import { io } from "socket.io-client";
 
 export default function Chat() {
+  const socket = useRef();
   const navigate = useNavigate();
   const [contacts,setContacts] = useState([]);
   const [currentUser, setCurrentUser] = useState(undefined);
   const [currentChat,setCurrentChat] = useState(undefined);
-  const [isLoaded,setIsLoaded] = useState(false);
   const handleChatChange = (chat) =>{
       setCurrentChat(chat);
   }
   
+
   useEffect(() => {
     const asyncFn = async () =>{
-        if (!axios.defaults.headers.common['Authorization']){
-          navigate("/login");
-        } else{
-          const data = await axios.get(`${registerRoute}`);
-          setCurrentUser(data.data);
-          setIsLoaded(true);
-        }
+      if (!localStorage.getItem("authToken")){
+        navigate("/login");
+      } else{
+        const data = await axios.get(`${registerRoute}`,{
+          headers:{
+            'Authorization': localStorage.getItem("authToken")
+          }
+        });
+        setCurrentUser(data.data);
+      }
     };
     asyncFn();
   }, [navigate]);
 
+  
+
+  useEffect(() =>{
+    if (currentUser){
+      socket.current = io(host);
+      socket.current.emit("add-user", currentUser.userid);
+    }
+  }, [currentUser]);
+
+
+  // kalo belum punya pp maka harus pilih dulu
   useEffect(() => {
     const asyncFn = async () =>{
         if (currentUser){
@@ -50,10 +66,13 @@ export default function Chat() {
   return ( <Container>
               <div className="container">
                 <Contacts contacts={contacts} currentUser={currentUser} changeChat={handleChatChange}/>
-                { !isLoaded && currentChat === undefined ? (
-                  <Welcome currentUser={currentUser}/>) : (
-                  <ChatContainer currentChat={currentChat} currentUser={currentUser}/>
-                )
+                {currentChat === undefined ? (
+                  <Welcome currentUser={currentUser}/>) 
+                  :
+                  (<ChatContainer 
+                  currentChat={currentChat} 
+                  currentUser={currentUser} 
+                  socket={socket}/>)
                 }
               </div>
            </Container>

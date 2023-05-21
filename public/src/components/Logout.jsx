@@ -7,7 +7,7 @@ import { BiPowerOff} from 'react-icons/bi';
 export default function Logout() {
     const navigate = useNavigate();
     const handleClick = async ()=>{
-        // localStorage.clear();
+        localStorage.clear();
         axios.defaults.headers.common['Authorization']=undefined;
         navigate("/login");
     }
