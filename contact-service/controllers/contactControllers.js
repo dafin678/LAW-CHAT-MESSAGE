@@ -12,10 +12,13 @@ module.exports.addContact = async (req, res, next) => {
                type: 'string'
         } */
         const user = req.params.user;
+        const user_id = req.body.user_id;
         const contact = req.body.contact;
+        const contact_id = req.body.contact_id;
         const contactCheck = await Contact.findOne({
             user: user,
-            contact: contact
+            contact: contact,
+            contact_id: contact_id
         })
         /* #swagger.responses[409] = {
                schema: { $ref: "#/definitions/Message" },
@@ -26,12 +29,18 @@ module.exports.addContact = async (req, res, next) => {
         }
         const usercontact = await Contact.create({
             user: user,
-            contact: contact
+            contact: contact,
+            contact_id: contact_id
         })
         /* #swagger.responses[200] = {
                schema: { $ref: "#/definitions/Contact" },
                description: 'Contact created' 
         } */
+        const usercontact2 = await Contact.create({
+            user: contact,
+            contact: user,
+            contact_id: user_id
+        })
         return res.status(200).json(usercontact);
     } catch (error) {
         next(error)

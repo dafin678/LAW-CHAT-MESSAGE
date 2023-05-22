@@ -48,19 +48,23 @@ export default function AddContact() {
     if (validateForm()) {
       const { username } = values;
       let contactUsername = null;
+      let contactId = null;
       try {
         const response = await axios.get(`${userHost}/users/name/${username}`);
         contactUsername = response.data.username;
+        contactId = response.data.userid;
       } catch (error) {
         toast.error(error.response.data.detail, toastOptions);
       }
-      if (contactUsername !== null) {
+      if (contactId !== null) {
         if (contactUsername == currentUser.username) {
           toast.error("Cant add yourself to contact", toastOptions);
         } else {
           try {
             const response = await axios.post(`${contactsRoute}/${currentUser.username}`, {
-              "contact": contactUsername
+              "user_id": currentUser.userid,
+              "contact": contactUsername,
+              "contact_id": contactId
             });
             navigate("/");
           } catch (error) {
