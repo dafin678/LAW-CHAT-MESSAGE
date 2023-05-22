@@ -23,10 +23,12 @@ module.exports.getMessages = async (req, res, next) => {
   }
 };
 
-module.exports.getBroadcastMessage = async (req, res, next) => {
+module.exports.postBroadcastMessage = async (req, res, next) => {
   try {
+    const { from, message } = req.body;
+
     const getAllContact = async () => {
-        const response = await axios.get('http://34.28.228.30/api/contact/fauzan123');
+        const response = await axios.get(`http://34.28.228.30/api/contact/${from}`);
         const data = await response.data;
         console.log(data);
         return data.map(item => item.contact_id); 
@@ -55,9 +57,6 @@ module.exports.getBroadcastMessage = async (req, res, next) => {
             // setMessages(msgs);
         };
     });
-
-
-    const { from, message } = req.body;
     const data = await broadcast.create({
       message: { text: message },
       receivers: contactList,
