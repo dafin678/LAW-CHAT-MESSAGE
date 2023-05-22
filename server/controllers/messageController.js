@@ -30,6 +30,7 @@ module.exports.addMessage = async (req, res, next) => {
       users: [from, to],
       sender: from,
     });
+    console.log(783);
 
     if (data) return res.json({ msg: "Message added successfully." });
     else return res.json({ msg: "Failed to add message to the database" });

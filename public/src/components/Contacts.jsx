@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { RiContactsBook2Fill } from "react-icons/ri";
+import { RiContactsBook2Fill,RiBroadcastFill } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { userHost } from "../utils/APIRoutes";
 import styled from "styled-components";
@@ -43,9 +43,14 @@ export default function Contacts({contacts,currentUser, changeChat}) {
         }
     }, [currentUser]);
 
-    const handleClick = async () => {
+    const handleAddContact = async () => {
       navigate("/addcontact")
     };
+
+    const handleBroadcast = async () =>{
+      navigate("/broadcast")
+    };
+
 
   return <>
   {
@@ -54,6 +59,9 @@ export default function Contacts({contacts,currentUser, changeChat}) {
         <div className="brand">
           <img src={Logo} alt="logo" />
           <h3>LawChat</h3>
+          <Button onClick={handleBroadcast}>
+                <RiBroadcastFill />
+              </Button>
         </div>
         <div className="contacts">
           {
@@ -88,7 +96,7 @@ export default function Contacts({contacts,currentUser, changeChat}) {
               </div>
             </div>
             <div style={{display: "flex"}}>
-              <Button onClick={handleClick}>
+              <Button onClick={handleAddContact}>
                 <RiContactsBook2Fill />
               </Button>
               <Logout />
