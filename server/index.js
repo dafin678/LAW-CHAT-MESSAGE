@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const socket = require("socket.io");
+const broadcastRoutes = require("./routes/broadcastRoutes");
 
 
 const app = express();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", userRoutes)
 app.use("/api/message", messageRoutes)
+app.use("/api/broadcast", broadcastRoutes)
 
 mongoose.connect(process.env.MONGO_URL,{
     useNewUrlParser: true,
