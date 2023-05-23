@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/userRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const socket = require("socket.io");
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
+
 
 
 const app = express();
@@ -13,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", userRoutes);
 app.use("/api/message", messageRoutes);
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 mongoose.connect(process.env.MONGO_URL,{
     useNewUrlParser: true,
@@ -30,7 +34,7 @@ const server = app.listen(process.env.PORT, () =>{
 
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "https://cheerful-malasada-35b7b7.netlify.app/",
         credentials: true,
     }
 });
